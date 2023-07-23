@@ -1,0 +1,47 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  background-color: #3c3c3c;
+}
+
+h1 {
+  color: white;
+  margin-top: 2rem;
+}
+
+span {
+  color: white;
+  font-weight: bold;
+}
+
+canvas {
+  border: 1px solid #000;
+  background-color: white;
+  margin-bottom: 1rem;
+}
+
+.color-picker {
+  margin-top: 10px;
+}
+
+.tools {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+button {
+  margin-right: 5px;
+}
+
+#clearButton {
+  margin-top: 10px;
+  margin-bottom: 1rem;
+}
+
+.active-tool {
+  background-color: #007bff;
+  color: white;
+}
