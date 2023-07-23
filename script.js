@@ -116,9 +116,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const positionBuffer = gl.createBuffer();
 
   // Function to represent a shape
-  function Shape(type, color) {
-    this.type = type;
-    this.color = color;
+  class Shape {
+    constructor(type, color) {
+      this.type = type;
+      this.color = color;
+    }
   }
 
   // Create an array to store the drawn points
@@ -249,7 +251,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const ndcY2 = 1 - (lastY / canvas.height) * 2;
 
       // Save shape
-      shapes.push(new Shape("line", [ndcX1, ndcY1, ndcX2, ndcY2], getColor()));
+      shapes.push(new Shape("line", getColor()));
 
       // Save vertices
       shapeVertices = shapeVertices.concat([ndcX1, ndcY1, ndcX2, ndcY2]);
@@ -279,24 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const ndcY2 = 1 - (oppositeY / canvas.height) * 2;
 
       // Save shape
-      shapes.push(
-        new Shape(
-          "square",
-          [
-            ndcX1,
-            ndcY1,
-            ndcX2,
-            ndcY1,
-            ndcX2,
-            ndcY2,
-            ndcX1,
-            ndcY2,
-            ndcX1,
-            ndcY1,
-          ],
-          getColor()
-        )
-      );
+      shapes.push(new Shape("square", getColor()));
 
       // Save vertices
       shapeVertices = shapeVertices.concat([
@@ -323,24 +308,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const ndcY2 = 1 - (lastY / canvas.height) * 2;
 
       // Save shape
-      shapes.push(
-        new Shape(
-          "rectangle",
-          [
-            ndcX1,
-            ndcY1,
-            ndcX2,
-            ndcY1,
-            ndcX2,
-            ndcY2,
-            ndcX1,
-            ndcY2,
-            ndcX1,
-            ndcY1,
-          ],
-          getColor()
-        )
-      );
+      shapes.push(new Shape("rectangle", getColor()));
 
       // Save vertices
       shapeVertices = shapeVertices.concat([
@@ -362,12 +330,12 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Function to get color
-  function getColor() {
+  const getColor = () => {
     return colorPicker.value;
-  }
+  };
 
   // Function to draw freeform line
-  function drawFreeformLine(x1, y1, x2, y2, color) {
+  const drawFreeformLine = (x1, y1, x2, y2, color) => {
     // Redraw saved shapes
     redrawShapes();
 
@@ -379,7 +347,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Save shape and vertices
     const lineVertices = [ndcX1, ndcY1, ndcX2, ndcY2];
-    shapes.push(new Shape("line", lineVertices, color));
+    shapes.push(new Shape("line", color));
     shapeVertices = shapeVertices.concat(lineVertices);
 
     // Update the points array with new points
@@ -408,9 +376,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Draw the lines
     gl.drawArrays(gl.LINES, 0, points.length / 2);
-  }
+  };
 
-  function drawLine(x1, y1, x2, y2, color) {
+  const drawLine = (x1, y1, x2, y2, color) => {
     // Redraw saved shapes
     redrawShapes();
 
@@ -446,9 +414,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Draw the line
     gl.drawArrays(gl.LINES, 0, 2);
-  }
+  };
 
-  function drawSquare(x1, y1, x2, y2, color) {
+  const drawSquare = (x1, y1, x2, y2, color) => {
     // Redraw saved shapes
     redrawShapes();
 
@@ -502,10 +470,10 @@ document.addEventListener("DOMContentLoaded", function () {
     gl.uniform4fv(colorUniformLocation, colors);
 
     // Draw the square
-    gl.drawArrays(gl.LINE_STRIP, 0, 5); // Update the number of vertices to 5
-  }
+    gl.drawArrays(gl.LINE_STRIP, 0, 5);
+  };
 
-  function drawRectangle(x1, y1, x2, y2, color) {
+  const drawRectangle = (x1, y1, x2, y2, color) => {
     // Redraw saved shapes
     redrawShapes();
 
@@ -548,10 +516,10 @@ document.addEventListener("DOMContentLoaded", function () {
     gl.uniform4fv(colorUniformLocation, colors);
 
     // Draw the rectangle
-    gl.drawArrays(gl.LINE_LOOP, 0, 5); // Use gl.LINE_LOOP to draw a closed loop
-  }
+    gl.drawArrays(gl.LINE_LOOP, 0, 5);
+  };
 
-  function redrawShapes() {
+  const redrawShapes = () => {
     // Bind the shader program before drawing
     gl.useProgram(shader_program);
 
@@ -607,16 +575,10 @@ document.addEventListener("DOMContentLoaded", function () {
           break;
       }
     }
-  }
-
-  // Get the clear button element
-  const clearButton = document.getElementById("clearButton");
-
-  // Add a click event listener to the clear button
-  clearButton.addEventListener("click", clearCanvas);
+  };
 
   // Function to clear the canvas and the points array
-  function clearCanvas() {
+  const clearCanvas = () => {
     // Clear the points array
     points = [];
     shapes = [];
@@ -638,13 +600,16 @@ document.addEventListener("DOMContentLoaded", function () {
     // Set the color to clear the canvas (e.g., white)
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
+  };
 
-    // You might want to call gl.drawArrays here to ensure the canvas is cleared on the screen
-    // gl.drawArrays(gl.LINES, 0, 0);
-  }
+  // Get the clear button element
+  const clearButton = document.getElementById("clearButton");
+
+  // Add a click event listener to the clear button
+  clearButton.addEventListener("click", clearCanvas);
 
   // Function to convert the color string to an array of RGBA values
-  function getColorAsArray(color) {
+  const getColorAsArray = (color) => {
     const rgba = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
     return [
       parseInt(rgba[1], 16) / 255,
@@ -652,7 +617,7 @@ document.addEventListener("DOMContentLoaded", function () {
       parseInt(rgba[3], 16) / 255,
       1.0,
     ];
-  }
+  };
 
   // Event to set active tool
   penButton.addEventListener("click", () => {
@@ -681,7 +646,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Function to set the active tool and update button styling
-  function setActiveTool(toolButton) {
+  const setActiveTool = (toolButton) => {
     const toolButtons = document.querySelectorAll(".tools button");
     toolButtons.forEach((button) => {
       if (button === toolButton) {
@@ -690,7 +655,7 @@ document.addEventListener("DOMContentLoaded", function () {
         button.classList.remove("active-tool");
       }
     });
-  }
+  };
 
   // Set first active tool to pen
   setActiveTool(penButton);
